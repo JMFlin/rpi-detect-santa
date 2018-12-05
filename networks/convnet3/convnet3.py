@@ -2,7 +2,7 @@
 import numpy as np
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Dense, Dropout, Flatten, Activation
 from keras.layers import Conv2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
@@ -21,32 +21,32 @@ class ConvNet3:
         if K.image_data_format() == "channels_first":
             inputShape = (depth, height, width)
 
-            # 1st conv. layer
-            model.add(Conv2D(32, (3, 3), input_shape = inputShape, activation = 'relu'))
-            model.add(MaxPooling2D(pool_size = (2, 2)))
+        model.add(Conv2D(32, (3, 3), padding="same", input_shape=inputShape))
+        model.add(Activation('relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
 
-            # 2nd conv. layer
-            model.add(Conv2D(32, (3, 3), activation = 'relu')) 
-            model.add(MaxPooling2D(pool_size = (2, 2)))
+        model.add(Conv2D(32, (3, 3)))
+        model.add(Activation('relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
 
-            # 3nd conv. layer
-            model.add(Conv2D(64, (3, 3), activation = 'relu')) 
-            model.add(MaxPooling2D(pool_size = (2, 2)))
+        model.add(Conv2D(64, (3, 3)))
+        model.add(Activation('relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
 
-            # Flattening
-            model.add(Flatten())
+        model.add(Flatten())  # this converts our 3D feature maps to 1D feature vectors
+        model.add(Dense(64))
+        model.add(Activation('relu'))
 
-            # Full connection
-            model.add(Dense(units = 64, activation = 'relu'))
-            model.add(Dropout(0.5)) 
-            model.add(Dense(units = 1, activation = 'sigmoid'))
+        model.add(Dropout(0.1))
+        model.add(Dense(classes))
+        model.add(Activation('sigmoid'))
  
-        # return the constructed network architecture
         return model
 
     @staticmethod
     def compile(model, lr, decay, metrics):
-        opt = Adam(lr=lr, decay=decay)
+        
+        opt = "rmsprop"
         model.compile(loss="binary_crossentropy", 
             optimizer=opt,
             metrics=[metrics])
@@ -54,11 +54,6 @@ class ConvNet3:
 
     @staticmethod
     def train(model, trainX, testX, trainY, testY, BS, EPOCHS):
-        
-        opt = "rmsprop"
-        model.compile(loss="binary_crossentropy", 
-            optimizer=opt,
-            metrics="accuracy")
 
         aug = ImageDataGenerator(rotation_range=30, width_shift_range=0.1,
             height_shift_range=0.1, shear_range=0.2, zoom_range=0.2,

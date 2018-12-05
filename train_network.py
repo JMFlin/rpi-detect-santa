@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from keras.preprocessing.image import img_to_array
 from keras.utils import to_categorical
 from networks.lenet.lenet import LeNet
+from networks.convnet3.convnet3 import ConvNet3
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
@@ -96,8 +97,8 @@ if __name__ == '__main__':
     IMAGE_HEIGTH = 28
     directory_positive = os.getcwd() + "/images/positive/" 
     directory_negative = os.getcwd() + "/images/negative/"
-    plot_directory = os.getcwd() + "/networks/lenet/training-plots/"
-    model_directory = os.getcwd() + "/networks/lenet/model/"
+    plot_directory = os.getcwd() + "/networks/convnet3/training-plots/"
+    model_directory = os.getcwd() + "/networks/convnet3/model/"
      
     # initialize the data and labels
     print("[INFO] loading images...")
@@ -108,12 +109,12 @@ if __name__ == '__main__':
 
     # initialize the model
     print("[INFO] building and compiling model...")
-    model = LeNet.build(width=IMAGE_WIDTH, height=IMAGE_HEIGTH, depth=3, classes=2)
-    model = LeNet.compile(model=model, lr=INIT_LR, decay=INIT_LR / EPOCHS, metrics = "accuracy")
-     
+    model = ConvNet3.build(width=IMAGE_WIDTH, height=IMAGE_HEIGTH, depth=3, classes=2)
+    model = ConvNet3.compile(model=model, lr=INIT_LR, decay=INIT_LR / EPOCHS, metrics = "accuracy")
+
     # train the network
     print("[INFO] training network...")
-    (model, history) = LeNet.train(model, trainX, testX, trainY, testY, BS, EPOCHS)
+    (model, history) = ConvNet3.train(model, trainX, testX, trainY, testY, BS, EPOCHS)
 
     ###
     #print(model.evaluate(testX, testY, batch_size=128))
