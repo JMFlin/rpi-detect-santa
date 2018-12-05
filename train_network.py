@@ -90,11 +90,11 @@ if __name__ == '__main__':
     
     # initialize the number of epochs to train for, initial learning rate,
     # and batch size
-    EPOCHS = 25
+    EPOCHS = 30
     INIT_LR = 1e-3
     BS = 32
-    IMAGE_WIDTH = 28
-    IMAGE_HEIGTH = 28
+    IMAGE_WIDTH = 28 #128 #343
+    IMAGE_HEIGTH = 28 #128 #500
     directory_positive = os.getcwd() + "/images/positive/" 
     directory_negative = os.getcwd() + "/images/negative/"
     plot_directory = os.getcwd() + "/networks/convnet3/training-plots/"
