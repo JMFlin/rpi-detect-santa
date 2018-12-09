@@ -3,7 +3,7 @@ from keras.models import load_model
 #from gpiozero import LEDBoard
 #from gpiozero.tools import random_values
 from imutils.video import VideoStream
-from threading import Thread
+from threading import Thread, Event
 import imutils
 import cv2
 import time
@@ -52,27 +52,33 @@ def play_christmas_music(path):
 		pass
 	
 def activate_leds(led_pins):
+	#ledThread = currentThread()
+	#i = 2
 	try:
-		for j in range(20):
-			for i in led_pins:
-				GPIO.setup(i, GPIO.OUT)			
-				GPIO.output(i, GPIO.LOW)
-				print("[INFO] Led", i, "is on")
-				sleep(2)
-				GPIO.output(i, GPIO.HIGH)
-				
+		#while stop_event.is_set():
+			#for j in range(20):
+		for i in led_pins:
+			GPIO.setup(i, GPIO.OUT)			
+			GPIO.output(i, GPIO.LOW)
+			print("[INFO] Led", i, "is on")
+			sleep(2)
+			GPIO.output(i, GPIO.HIGH)
+			print("[INFO] Led", i, "is off")
 		sleep(3)
 		for i in led_pins:
-				GPIO.setup(i, GPIO.OUT)			
-				GPIO.output(i, GPIO.LOW)
-				print("[INFO] Led", i, "is on")
+			GPIO.setup(i, GPIO.OUT)			
+			GPIO.output(i, GPIO.LOW)
+			print("[INFO] Led", i, "is on")
+		print("[INFO] Both leds are on")
 	except KeyboardInterrupt:
 		pass
+	
 
 def deactivate_leds(led_pins):
 	try:
 		for i in led_pins:
-			GPIO.output(i, GPIO.HIGH)		
+			GPIO.output(i, GPIO.HIGH)	
+		print("[INFO] Both leds are off")	
 	except KeyboardInterrupt:
 		pass
 		
@@ -98,7 +104,6 @@ while True:
 	image = image.astype("float") / 255.0
 	image = img_to_array(image)
 	image = np.expand_dims(image, axis=0)
- 
 	# classify the input image and initialize the label and
 	# probability of the prediction
 	(santa, notSanta) = model.predict(image)[0]
@@ -125,11 +130,12 @@ while True:
 			SANTA = True
 			
 			print("[INFO] activating led...")
-			# light up the christmas lights
+			
 			ledThread = Thread(target=activate_leds, args=(led_pins,))
 			ledThread.daemon = True
+			# light up the christmas lights
 			ledThread.start()
-			
+							
 			print("[INFO] playing music...")
 			# play some christmas tunes
 			musicThread = Thread(target=play_christmas_music,
@@ -150,8 +156,8 @@ while True:
 		ACTIVATION = 0
 		SANTA = False
 		try:
-			deactivate_leds(led_pins)
 			stop_christmas_music(AUDIO_PATH)
+			deactivate_leds(led_pins)
 		except:
 			pass
 			
