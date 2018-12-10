@@ -66,6 +66,7 @@ def plot_training(epochs, history, plot_directory):
     plt.plot(np.arange(0, epochs), history.history["val_loss"], label="val_loss")
     plt.plot(np.arange(0, epochs), history.history["acc"], label="train_acc")
     plt.plot(np.arange(0, epochs), history.history["val_acc"], label="val_acc")
+    plt.ylim(ymax = 1, ymin = 0)
     plt.title("Training Loss and Accuracy")
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
@@ -97,8 +98,8 @@ if __name__ == '__main__':
     IMAGE_HEIGTH = 28 #128 #500
     directory_positive = os.getcwd() + "/images/positive/" 
     directory_negative = os.getcwd() + "/images/negative/"
-    plot_directory = os.getcwd() + "/networks/convnet3/training-plots/"
-    model_directory = os.getcwd() + "/networks/convnet3/model/"
+    plot_directory = os.getcwd() + "/networks/lenet/training-plots/"
+    model_directory = os.getcwd() + "/networks/lenet/models/"
      
     # initialize the data and labels
     print("[INFO] loading images...")
@@ -109,12 +110,12 @@ if __name__ == '__main__':
 
     # initialize the model
     print("[INFO] building and compiling model...")
-    model = ConvNet3.build(width=IMAGE_WIDTH, height=IMAGE_HEIGTH, depth=3, classes=2)
-    model = ConvNet3.compile(model=model, lr=INIT_LR, decay=INIT_LR / EPOCHS, metrics = "accuracy")
+    model = LeNet.build(width=IMAGE_WIDTH, height=IMAGE_HEIGTH, depth=3, classes=2)
+    model = LeNet.compile(model=model, lr=INIT_LR, decay=INIT_LR / EPOCHS, metrics = "accuracy")
 
     # train the network
     print("[INFO] training network...")
-    (model, history) = ConvNet3.train(model, trainX, testX, trainY, testY, BS, EPOCHS)
+    (model, history) = LeNet.train(model, trainX, testX, trainY, testY, BS, EPOCHS)
 
     ###
     #print(model.evaluate(testX, testY, batch_size=128))
