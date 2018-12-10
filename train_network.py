@@ -127,4 +127,6 @@ if __name__ == '__main__':
     print("[INFO] serializing network...")
     model.save(model_directory + "model.h5")
 
-    
+    ## Crowd of people
+    #https://www.google.fi/search?rlz=1C1GGRV_enFI774FI774&biw=1536&bih=723&tbm=isch&sa=1&ei=RkMIXOvcMYuJrwTTjYyYAg&q=crowd+of+people&oq=crowd&gs_l=img.3.2.0i67j0j0i67l4j0j0i67l3.1662.2301..5467...0.0..0.70.265.5....3..1....1..gws-wiz-img.yQzZD4gskXk
+    #
