@@ -98,6 +98,20 @@ def stop_christmas_music(path):
 		os.system(command)
 	except KeyboardInterrupt:
 		pass
+
+def frame_image():
+	# grab the frame from the threaded video stream and resize it
+	# to have a maximum width of 400 pixels
+	frame = vs.read()
+	frame = imutils.resize(frame, width=400)
+	
+	# prepare the image to be classified by our deep learning network
+	image = cv2.resize(frame, (28, 28))
+	image = image.astype("float") / 255.0
+	image = img_to_array(image)
+	image = np.expand_dims(image, axis=0)
+
+	return(frame, image)
 		
 def activate_detection(TOTAL_CONSEC_SANTA, TOTAL_CONSEC_NOT_SANTA, TOTAL_THRESH_SANTA, model):
 	# initialize is the santa alarm has been triggered
@@ -105,16 +119,9 @@ def activate_detection(TOTAL_CONSEC_SANTA, TOTAL_CONSEC_NOT_SANTA, TOTAL_THRESH_
 	# loop over the frames from the video stream
 	while True:
 		ACTIVATION = 0
-		# grab the frame from the threaded video stream and resize it
-		# to have a maximum width of 400 pixels
-		frame = vs.read()
-		frame = imutils.resize(frame, width=400)
 		
-		# prepare the image to be classified by our deep learning network
-		image = cv2.resize(frame, (28, 28))
-		image = image.astype("float") / 255.0
-		image = img_to_array(image)
-		image = np.expand_dims(image, axis=0)
+		frame, image = frame_image()
+
 		# classify the input image and initialize the label and
 		# probability of the prediction
 		(santa, notSanta) = model.predict(image)[0]
@@ -141,14 +148,11 @@ def activate_detection(TOTAL_CONSEC_SANTA, TOTAL_CONSEC_NOT_SANTA, TOTAL_THRESH_
 				SANTA = True
 				
 				print("[INFO] activating led...")
-				
 				ledThread = Thread(target=activate_leds, args=(led_pins,))
 				ledThread.daemon = True
-				# light up the christmas lights
 				ledThread.start()
 								
 				print("[INFO] playing music...")
-				# play some christmas tunes
 				musicThread = Thread(target=play_christmas_music,
 				args=(AUDIO_PATH,))
 				musicThread.daemon = False
@@ -171,19 +175,26 @@ def activate_detection(TOTAL_CONSEC_SANTA, TOTAL_CONSEC_NOT_SANTA, TOTAL_THRESH_
 				deactivate_leds(led_pins)
 			except:
 				pass
-				
-		# build the label and draw it on the frame
-		label = "{}: {:.2f}%".format(label, proba * 100)
-		frame = cv2.putText(frame, label, (10, 25),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-	 
-		# show the output frame
-		cv2.imshow("Frame", frame)
-		key = cv2.waitKey(1) & 0xFF
-	 
-		# if the `q` key was pressed, break from the loop
-		if key == ord("q"):
-			break	
+		
+		show_output(label, proba, frame)
+
+	return
+
+def show_output(label, proba, frame):
+	# build the label and draw it on the frame
+	label = "{}: {:.2f}%".format(label, proba * 100)
+	frame = cv2.putText(frame, label, (10, 25),
+		cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+ 
+	# show the output frame
+	cv2.imshow("Frame", frame)
+	key = cv2.waitKey(1) & 0xFF
+ 
+	# if the `q` key was pressed, break from the loop
+	if key == ord("q"):
+		break
+
+	return
 			
 
 
