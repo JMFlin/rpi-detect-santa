@@ -29,7 +29,7 @@ def main():
 	# santa along with threshold required to trigger the santa alarm
 
 	TOTAL_THRESH_SANTA = 50
-	TOTAL_THRESH_NOT_SANTA = 100
+	TOTAL_THRESH_NOT_SANTA = 150
 
 	# load the model
 	print("[INFO] loading model...")
