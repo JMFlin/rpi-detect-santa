@@ -12,7 +12,6 @@ import os
 import numpy as np
 import RPi.GPIO as GPIO
 
-
 def main():
 
 	GPIO.setmode(GPIO.BCM)
@@ -46,6 +45,7 @@ def main():
 		TOTAL_CONSEC_NOT_SANTA = TOTAL_CONSEC_NOT_SANTA, 
 		TOTAL_THRESH_SANTA = TOTAL_THRESH_SANTA, 
 		model = model)
+		
 	clean_up(AUDIO_PATH = AUDIO_PATH)
 
 
@@ -60,11 +60,8 @@ def play_christmas_music(path):
 		pass
 	
 def activate_leds(led_pins):
-	#ledThread = currentThread()
-	#i = 2
+
 	try:
-		#while stop_event.is_set():
-			#for j in range(20):
 		for i in led_pins:
 			GPIO.setup(i, GPIO.OUT)			
 			GPIO.output(i, GPIO.LOW)
@@ -110,8 +107,9 @@ def frame_image():
 	image = image.astype("float") / 255.0
 	image = img_to_array(image)
 	image = np.expand_dims(image, axis=0)
-
+	
 	return(frame, image)
+
 		
 def activate_detection(TOTAL_CONSEC_SANTA, TOTAL_CONSEC_NOT_SANTA, TOTAL_THRESH_SANTA, model):
 	# initialize is the santa alarm has been triggered
