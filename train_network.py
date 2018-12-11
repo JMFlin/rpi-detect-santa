@@ -16,7 +16,7 @@ import argparse
 import random
 import cv2
 import os
-
+import time
 
 
 def load_images(directory_positive, directory_negative):
@@ -71,7 +71,7 @@ def plot_training(epochs, history, plot_directory):
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
     plt.legend(loc="lower left")
-    plt.savefig(plot_directory + "training-loss-and-accuracy.jpg")
+    plt.savefig(plot_directory + "training-loss-and-accuracy-" + str(time.strftime("%Y%m%d-%H%M%S")) +".jpg")
 
 
 def create_train_test(data, labels):
@@ -91,15 +91,15 @@ if __name__ == '__main__':
     
     # initialize the number of epochs to train for, initial learning rate,
     # and batch size
-    EPOCHS = 30
+    EPOCHS = 35
     INIT_LR = 1e-3
     BS = 32
-    IMAGE_WIDTH = 80 #128 #343
-    IMAGE_HEIGTH = 80 #128 #500
+    IMAGE_WIDTH = 28 #128 #343
+    IMAGE_HEIGTH = 28 #128 #500
     directory_positive = os.getcwd() + "/images/positive/" 
     directory_negative = os.getcwd() + "/images/negative/"
-    plot_directory = os.getcwd() + "/networks/lenet/training-plots/"
-    model_directory = os.getcwd() + "/networks/lenet/models/"
+    plot_directory = os.getcwd() + "/networks/convnet3/training-plots/"
+    model_directory = os.getcwd() + "/networks/convnet3/models/"
      
     # initialize the data and labels
     print("[INFO] loading images...")
@@ -110,12 +110,12 @@ if __name__ == '__main__':
 
     # initialize the model
     print("[INFO] building and compiling model...")
-    model = LeNet.build(width=IMAGE_WIDTH, height=IMAGE_HEIGTH, depth=3, classes=2)
-    model = LeNet.compile(model=model, lr=INIT_LR, decay=INIT_LR / EPOCHS, metrics = "accuracy")
+    model = ConvNet3.build(width=IMAGE_WIDTH, height=IMAGE_HEIGTH, depth=3, classes=2)
+    model = ConvNet3.compile(model=model, lr=INIT_LR, decay=INIT_LR / EPOCHS, metrics = "accuracy")
 
     # train the network
     print("[INFO] training network...")
-    (model, history) = LeNet.train(model, trainX, testX, trainY, testY, BS, EPOCHS)
+    (model, history) = ConvNet3.train(model, trainX, testX, trainY, testY, BS, EPOCHS)
 
     ###
     #print(model.evaluate(testX, testY, batch_size=128))
