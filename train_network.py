@@ -57,7 +57,7 @@ def load_images(directory_positive, directory_negative):
 
     return(data, labels)
 
-def plot_training(epochs, history, plot_directory):
+def plot_training(epochs, history, plot_directory, add):
     # plot the training loss and accuracy
     plt.style.use("ggplot")
     plt.figure()
@@ -71,7 +71,7 @@ def plot_training(epochs, history, plot_directory):
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
     plt.legend(loc="lower left")
-    plt.savefig(plot_directory + "training-loss-and-accuracy-" + str(time.strftime("%Y%m%d-%H%M%S")) +".jpg")
+    plt.savefig(plot_directory + "training-loss-and-accuracy-" + str(time.strftime("%Y%m%d-%H%M%S")) + add +".jpg")
 
 
 def create_train_test(data, labels):
@@ -94,8 +94,8 @@ if __name__ == '__main__':
     EPOCHS = 35
     INIT_LR = 1e-3
     BS = 32
-    IMAGE_WIDTH = 28 #128 #343
-    IMAGE_HEIGTH = 28 #128 #500
+    IMAGE_WIDTH = 64 #128 #343
+    IMAGE_HEIGTH = 64 #128 #500
     directory_positive = os.getcwd() + "/images/positive/" 
     directory_negative = os.getcwd() + "/images/negative/"
     plot_directory = os.getcwd() + "/networks/convnet3/training-plots/"
@@ -122,11 +122,11 @@ if __name__ == '__main__':
     ###Scalar test loss
 
     print("[INFO] creating validation plot...")
-    plot_training(EPOCHS, history, plot_directory)
+    plot_training(EPOCHS, history, plot_directory, add = "-" + str(IMAGE_WIDTH) + "-" + str(IMAGE_HEIGTH))
      
     # save the model to disk
     print("[INFO] serializing network...")
-    model.save(model_directory + "model.h5")
+    model.save(model_directory + "model-" + str(IMAGE_WIDTH) + "-" + str(IMAGE_HEIGTH) +".h5")
 
     ## Crowd of people
     #https://www.google.fi/search?rlz=1C1GGRV_enFI774FI774&biw=1536&bih=723&tbm=isch&sa=1&ei=RkMIXOvcMYuJrwTTjYyYAg&q=crowd+of+people&oq=crowd&gs_l=img.3.2.0i67j0j0i67l4j0j0i67l3.1662.2301..5467...0.0..0.70.265.5....3..1....1..gws-wiz-img.yQzZD4gskXk

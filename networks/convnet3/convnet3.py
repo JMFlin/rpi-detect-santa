@@ -20,28 +20,31 @@ class ConvNet3:
         if K.image_data_format() == "channels_first":
             inputShape = (depth, height, width)
 
-        model.add(Dense(512, input_shape=inputShape))
+        model.add(Conv2D(32, (3, 3), padding="same", input_shape=inputShape))
         model.add(Activation('relu'))
-        model.add(Dropout(0.2))
-        model.add(Dense(512))
-        model.add(Activation('sigmoid'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(32, (3, 3), padding="same"))
         model.add(Activation('relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
 
-        model.add(Conv2D(32, (3, 3), padding="same"))
-        model.add(Activation('sigmoid'))
+        model.add(Conv2D(64, 3, 3))
+        model.add(Activation('relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
+
+
 
         model.add(Conv2D(64, (3, 3), padding="same"))
         model.add(Activation('relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Conv2D(96, 3, 3, border_mode='same'))
+        model.add(Activation('relu'))
+
+
 
         model.add(Flatten())  # this converts 3D feature maps to 1D feature vectors
         model.add(Dense(64))
         model.add(Activation('relu'))
-
         model.add(Dropout(0.1))
         model.add(Dense(classes))
         model.add(Activation('sigmoid'))
