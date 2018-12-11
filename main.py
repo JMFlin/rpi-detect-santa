@@ -165,7 +165,10 @@ while True:
 	label = "{}: {:.2f}%".format(label, proba * 100)
 	frame = cv2.putText(frame, label, (10, 25),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
- 
+	
+	cv2.namedWindow("Frame", cv2.WND_PROP_FULLSCREEN)
+	cv2.setWindowProperty("Frame", cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+	
 	# show the output frame
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF

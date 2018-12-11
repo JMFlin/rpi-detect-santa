@@ -20,7 +20,9 @@ def main():
 	led_pins = [2, 3]
 	# define the paths to the Not Santa Keras deep learning model and
 	# audio file
-	MODEL_PATH = "networks/lenet/models/model"
+	#MODEL_PATH = "networks/lenet/models/model"
+	#MODEL_PATH = "networks/convnet3/models/model.h5"
+	MODEL_PATH = "networks/lenet/models/model.h5"
 	AUDIO_PATH = "songs/jingle_bell_rock.mp3"
 
 	# initialize the total number of frames that *consecutively* contain
@@ -97,7 +99,7 @@ def frame_image(vs):
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
 	frame = vs.read()
-	frame = imutils.resize(frame, width=400)
+	frame = imutils.resize(frame, height = 1200, width = 1200)
 	
 	# prepare the image to be classified by our deep learning network
 	image = cv2.resize(frame, (28, 28))
@@ -142,7 +144,7 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 
 		# classify the input image and initialize the label and
 		# probability of the prediction
-		(santa, notSanta) = model.predict(image)[0]
+		(notSanta, santa) = model.predict(image)[0]
 		label = "Not Santa"
 		proba = notSanta
 		
@@ -170,9 +172,19 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 				start_threading_music(AUDIO_PATH)
 				
 				ACTIVATION = ACTIVATION + 1
+				
+			# build the label and draw it on the frame
+			label = "{}: {:.2f}%".format("Santa found with probability", proba * 100)
+			frame = cv2.putText(frame, label, (10, 25),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+				
 		else:
 			
 			TOTAL_CONSEC_NOT_SANTA = TOTAL_CONSEC_NOT_SANTA + 1	
+			# build the label and draw it on the frame
+			label = "{}: {:.2f}%".format("Trigger probability", (1-proba) * 100) #label
+			frame = cv2.putText(frame, label, (10, 25),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 		
 		# otherwise, reset the total number of consecutive frames and the
 		# santa alarm
@@ -187,11 +199,9 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 			except:
 				pass
 		
-		# build the label and draw it on the frame
-		label = "{}: {:.2f}%".format(label, proba * 100)
-		frame = cv2.putText(frame, label, (10, 25),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-	 
+		cv2.namedWindow("Frame", cv2.WND_PROP_FULLSCREEN)
+		cv2.setWindowProperty("Frame", cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+	
 		# show the output frame
 		cv2.imshow("Frame", frame)
 		key = cv2.waitKey(1) & 0xFF
@@ -201,8 +211,6 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 			break
 
 	return
-
-
  
 def clean_up(AUDIO_PATH):
 	try:
