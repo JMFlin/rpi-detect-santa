@@ -12,34 +12,44 @@ import os
 import numpy as np
 import RPi.GPIO as GPIO
 
+<<<<<<< HEAD
 GPIO.setmode(GPIO.BCM)
 
-#led_pins = [2, 3, 4, 17]
-led_pins = [2, 3]
-# define the paths to the Not Santa Keras deep learning model and
-# audio file
-MODEL_PATH = "networks/lenet/models/model"
-AUDIO_PATH = "songs/jingle_bell_rock.mp3"
+def main():
 
-# initialize the total number of frames that *consecutively* contain
-# santa along with threshold required to trigger the santa alarm
+	GPIO.setmode(GPIO.BCM)
 
-TOTAL_CONSEC_SANTA = 0
-TOTAL_CONSEC_NOT_SANTA = 0
-TOTAL_THRESH_SANTA = 50
-TOTAL_THRESH_NOT_SANTA = 150
-# initialize is the santa alarm has been triggered
-SANTA = False
+	#led_pins = [2, 3, 4, 17]
+	led_pins = [2, 3]
+	# define the paths to the Not Santa Keras deep learning model and
+	# audio file
+	MODEL_PATH = "networks/lenet/models/model"
+	AUDIO_PATH = "songs/jingle_bell_rock.mp3"
 
-# load the model
-print("[INFO] loading model...")
-model = load_model(MODEL_PATH)
- 
-# initialize the video stream and allow the camera sensor to warm up
-print("[INFO] starting video stream...")
-#vs = VideoStream(src=0).start()
-vs = VideoStream(usePiCamera=True).start()
-sleep(2.0)
+	# initialize the total number of frames that *consecutively* contain
+	# santa along with threshold required to trigger the santa alarm
+
+	TOTAL_CONSEC_SANTA = 0
+	TOTAL_CONSEC_NOT_SANTA = 0
+	TOTAL_THRESH_SANTA = 50
+	TOTAL_THRESH_NOT_SANTA = 100
+
+	# load the model
+	print("[INFO] loading model...")
+	model = load_model(MODEL_PATH)
+	 
+	# initialize the video stream and allow the camera sensor to warm up
+	print("[INFO] starting video stream...")
+	#vs = VideoStream(src=0).start()
+	vs = VideoStream(usePiCamera=True).start()
+	sleep(2.0)
+
+	activate_detection(TOTAL_CONSEC_SANTA = TOTAL_CONSEC_SANTA, 
+		TOTAL_CONSEC_NOT_SANTA = TOTAL_CONSEC_NOT_SANTA, 
+		TOTAL_THRESH_SANTA = TOTAL_THRESH_SANTA, 
+		model = model)
+	clean_up(AUDIO_PATH = AUDIO_PATH)
+
 
 
 def play_christmas_music(path):
@@ -90,10 +100,8 @@ def stop_christmas_music(path):
 		os.system(command)
 	except KeyboardInterrupt:
 		pass
-		
-# loop over the frames from the video stream
-while True:
-	ACTIVATION = 0
+
+def frame_image():
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
 	frame = vs.read()
@@ -104,6 +112,7 @@ while True:
 	image = image.astype("float") / 255.0
 	image = img_to_array(image)
 	image = np.expand_dims(image, axis=0)
+<<<<<<< HEAD
 	# classify the input image and initialize the label and
 	# probability of the prediction
 	(notSanta, santa) = model.predict(image)[0]
@@ -114,53 +123,79 @@ while True:
 	# neural network
 	#print("[INFO] prediction made...")
 	if santa > notSanta:
+=======
+
+	return(frame, image)
+>>>>>>> 7c6b00710c319e58c8e1ddcf3a1e9ad1725ada9c
 		
-		# update the label and prediction probability
-		label = "Santa"
-		proba = santa
- 
-		# increment the total number of consecutive frames that
-		# contain santa
-		TOTAL_CONSEC_SANTA = TOTAL_CONSEC_SANTA + 1
-		
-		# check to see if we should raise the santa alarm
-		if not SANTA and TOTAL_CONSEC_SANTA >= TOTAL_THRESH_SANTA and ACTIVATION == 0:
-			print("[INFO] prediction made...")
-			# indicate that santa has been found
-			SANTA = True
-			
-			print("[INFO] activating led...")
-			
-			ledThread = Thread(target=activate_leds, args=(led_pins,))
-			ledThread.daemon = True
-			# light up the christmas lights
-			ledThread.start()
-							
-			print("[INFO] playing music...")
-			# play some christmas tunes
-			musicThread = Thread(target=play_christmas_music,
-			args=(AUDIO_PATH,))
-			musicThread.daemon = False
-			musicThread.start()
-			
-			ACTIVATION = ACTIVATION + 1
-	else:
-		
-		TOTAL_CONSEC_NOT_SANTA = TOTAL_CONSEC_NOT_SANTA + 1	
-	
-	# otherwise, reset the total number of consecutive frames and the
-	# santa alarm
-	if TOTAL_CONSEC_NOT_SANTA >= TOTAL_THRESH_NOT_SANTA:
-		TOTAL_CONSEC_NOT_SANTA = 0
-		TOTAL_CONSEC_SANTA = 0
+def activate_detection(TOTAL_CONSEC_SANTA, TOTAL_CONSEC_NOT_SANTA, TOTAL_THRESH_SANTA, model):
+	# initialize is the santa alarm has been triggered
+	SANTA = False
+	# loop over the frames from the video stream
+	while True:
 		ACTIVATION = 0
-		SANTA = False
-		try:
-			stop_christmas_music(AUDIO_PATH)
-			deactivate_leds(led_pins)
-		except:
-			pass
+		
+		frame, image = frame_image()
+
+		# classify the input image and initialize the label and
+		# probability of the prediction
+		(santa, notSanta) = model.predict(image)[0]
+		label = "Not Santa"
+		proba = notSanta
+		
+		# check to see if santa was detected using our convolutional
+		# neural network
+		#print("[INFO] prediction made...")
+		if santa > notSanta:
 			
+			# update the label and prediction probability
+			label = "Santa"
+			proba = santa
+	 
+			# increment the total number of consecutive frames that
+			# contain santa
+			TOTAL_CONSEC_SANTA = TOTAL_CONSEC_SANTA + 1
+			
+			# check to see if we should raise the santa alarm
+			if not SANTA and TOTAL_CONSEC_SANTA >= TOTAL_THRESH_SANTA and ACTIVATION == 0:
+				print("[INFO] prediction made...")
+				# indicate that santa has been found
+				SANTA = True
+				
+				print("[INFO] activating led...")
+				ledThread = Thread(target=activate_leds, args=(led_pins,))
+				ledThread.daemon = True
+				ledThread.start()
+								
+				print("[INFO] playing music...")
+				musicThread = Thread(target=play_christmas_music,
+				args=(AUDIO_PATH,))
+				musicThread.daemon = False
+				musicThread.start()
+				
+				ACTIVATION = ACTIVATION + 1
+		else:
+			
+			TOTAL_CONSEC_NOT_SANTA = TOTAL_CONSEC_NOT_SANTA + 1	
+		
+		# otherwise, reset the total number of consecutive frames and the
+		# santa alarm
+		if TOTAL_CONSEC_NOT_SANTA >= TOTAL_THRESH_NOT_SANTA:
+			TOTAL_CONSEC_NOT_SANTA = 0
+			TOTAL_CONSEC_SANTA = 0
+			ACTIVATION = 0
+			SANTA = False
+			try:
+				stop_christmas_music(AUDIO_PATH)
+				deactivate_leds(led_pins)
+			except:
+				pass
+		
+		show_output(label, proba, frame)
+
+	return
+
+def show_output(label, proba, frame):
 	# build the label and draw it on the frame
 	label = "{}: {:.2f}%".format(label, proba * 100)
 	frame = cv2.putText(frame, label, (10, 25),
@@ -172,12 +207,18 @@ while True:
  
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
-		break	
+		break
+
+	return
 			
 
-try:
-	GPIO.cleanup()
-	stop_christmas_music(AUDIO_PATH)
-except:
-	pass
+
  
+def clean_up(AUDIO_PATH):
+	try:
+		GPIO.cleanup()
+		stop_christmas_music(AUDIO_PATH)
+	except:
+		pass
+
+main()
