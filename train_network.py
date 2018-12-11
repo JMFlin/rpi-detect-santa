@@ -94,8 +94,8 @@ if __name__ == '__main__':
     EPOCHS = 30
     INIT_LR = 1e-3
     BS = 32
-    IMAGE_WIDTH = 28 #128 #343
-    IMAGE_HEIGTH = 28 #128 #500
+    IMAGE_WIDTH = 80 #128 #343
+    IMAGE_HEIGTH = 80 #128 #500
     directory_positive = os.getcwd() + "/images/positive/" 
     directory_negative = os.getcwd() + "/images/negative/"
     plot_directory = os.getcwd() + "/networks/lenet/training-plots/"

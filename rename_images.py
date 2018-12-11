@@ -16,9 +16,9 @@ def main(args):
       
     for filename in os.listdir(direc):
         try:
-            dst = f + str(i) + ".jpg"
-            src = direc+ filename 
-            dst = direc+ dst 
+            dst = str(i) + ".jpg"
+            src = direc + filename 
+            dst = direc + dst 
               
             # rename() function will 
             # rename all the files 
@@ -26,9 +26,9 @@ def main(args):
             i += 1
         except:
             random_id = id_generator()
-            dst = f + str(i) + "_" + random_id + ".jpg"
-            src = direc+ filename 
-            dst = direc+ dst 
+            dst = str(i) + "_" + random_id + ".jpg"
+            src = direc + filename 
+            dst = direc + dst 
               
             # rename() function will 
             # rename all the files 
