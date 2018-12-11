@@ -12,9 +12,6 @@ import os
 import numpy as np
 import RPi.GPIO as GPIO
 
-<<<<<<< HEAD
-GPIO.setmode(GPIO.BCM)
-
 def main():
 
 	GPIO.setmode(GPIO.BCM)
@@ -48,6 +45,7 @@ def main():
 		TOTAL_CONSEC_NOT_SANTA = TOTAL_CONSEC_NOT_SANTA, 
 		TOTAL_THRESH_SANTA = TOTAL_THRESH_SANTA, 
 		model = model)
+		
 	clean_up(AUDIO_PATH = AUDIO_PATH)
 
 
@@ -62,11 +60,8 @@ def play_christmas_music(path):
 		pass
 	
 def activate_leds(led_pins):
-	#ledThread = currentThread()
-	#i = 2
+
 	try:
-		#while stop_event.is_set():
-			#for j in range(20):
 		for i in led_pins:
 			GPIO.setup(i, GPIO.OUT)			
 			GPIO.output(i, GPIO.LOW)
@@ -112,21 +107,9 @@ def frame_image():
 	image = image.astype("float") / 255.0
 	image = img_to_array(image)
 	image = np.expand_dims(image, axis=0)
-<<<<<<< HEAD
-	# classify the input image and initialize the label and
-	# probability of the prediction
-	(notSanta, santa) = model.predict(image)[0]
-	label = "Not Santa"
-	proba = notSanta
 	
-	# check to see if santa was detected using our convolutional
-	# neural network
-	#print("[INFO] prediction made...")
-	if santa > notSanta:
-=======
-
 	return(frame, image)
->>>>>>> 7c6b00710c319e58c8e1ddcf3a1e9ad1725ada9c
+
 		
 def activate_detection(TOTAL_CONSEC_SANTA, TOTAL_CONSEC_NOT_SANTA, TOTAL_THRESH_SANTA, model):
 	# initialize is the santa alarm has been triggered
