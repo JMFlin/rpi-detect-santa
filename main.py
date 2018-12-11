@@ -27,7 +27,7 @@ AUDIO_PATH = "songs/jingle_bell_rock.mp3"
 TOTAL_CONSEC_SANTA = 0
 TOTAL_CONSEC_NOT_SANTA = 0
 TOTAL_THRESH_SANTA = 50
-TOTAL_THRESH_NOT_SANTA = 100
+TOTAL_THRESH_NOT_SANTA = 150
 # initialize is the santa alarm has been triggered
 SANTA = False
 
@@ -106,7 +106,7 @@ while True:
 	image = np.expand_dims(image, axis=0)
 	# classify the input image and initialize the label and
 	# probability of the prediction
-	(santa, notSanta) = model.predict(image)[0]
+	(notSanta, santa) = model.predict(image)[0]
 	label = "Not Santa"
 	proba = notSanta
 	
