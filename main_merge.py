@@ -12,24 +12,27 @@ import os
 import numpy as np
 import RPi.GPIO as GPIO
 
-def main():
+GPIO.setmode(GPIO.BCM)
 
-	GPIO.setmode(GPIO.BCM)
+
+def main():
 
 	#led_pins = [2, 3, 4, 17]
 	led_pins = [2, 3]
 	# define the paths to the Not Santa Keras deep learning model and
 	# audio file
 	#MODEL_PATH = "networks/lenet/models/model"
-	#MODEL_PATH = "networks/convnet3/models/model.h5"
-	MODEL_PATH = "networks/lenet/models/model.h5"
+	#MODEL_PATH = "networks/lenet/models/model.h5"
+	#MODEL_PATH = "networks/convnet3/models/model-28-28.h5" #okaish 	
+	#MODEL_PATH = "networks/convnet3/models/model-64-64.h5" #good
+	MODEL_PATH = "networks/lenet/models/model-64-64.h5" #
 	AUDIO_PATH = "songs/jingle_bell_rock.mp3"
 
 	# initialize the total number of frames that *consecutively* contain
 	# santa along with threshold required to trigger the santa alarm
 
 	TOTAL_THRESH_SANTA = 50
-	TOTAL_THRESH_NOT_SANTA = 150
+	TOTAL_THRESH_NOT_SANTA = 100
 
 	# load the model
 	print("[INFO] loading model...")
@@ -102,7 +105,7 @@ def frame_image(vs):
 	frame = imutils.resize(frame, height = 1200, width = 1200)
 	
 	# prepare the image to be classified by our deep learning network
-	image = cv2.resize(frame, (28, 28))
+	image = cv2.resize(frame, (64, 64))
 	image = image.astype("float") / 255.0
 	image = img_to_array(image)
 	image = np.expand_dims(image, axis=0)
@@ -200,7 +203,9 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 				pass
 		
 		cv2.namedWindow("Frame", cv2.WND_PROP_FULLSCREEN)
-		cv2.setWindowProperty("Frame", cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+		
+		cv2.resizeWindow("Frame", 1200, 1200)
+		#cv2.setWindowProperty("Frame", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 	
 		# show the output frame
 		cv2.imshow("Frame", frame)
