@@ -27,7 +27,7 @@ AUDIO_PATH = "songs/jingle_bell_rock.mp3"
 TOTAL_CONSEC_SANTA = 0
 TOTAL_CONSEC_NOT_SANTA = 0
 TOTAL_THRESH_SANTA = 50
-TOTAL_THRESH_NOT_SANTA = 150
+TOTAL_THRESH_NOT_SANTA = 200
 # initialize is the santa alarm has been triggered
 SANTA = False
 
