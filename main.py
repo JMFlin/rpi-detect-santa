@@ -49,6 +49,8 @@ def main():
 		
 	clean_up(AUDIO_PATH = AUDIO_PATH)
 
+	return()
+
 
 
 def play_christmas_music(path):
@@ -134,6 +136,9 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 	sleep(2.0)
 	
 	AUDIO_PATH = "songs/jingle_bell_rock.mp3"
+
+	body_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_fullbody.xml')
+	
 	
 	# initialize is the santa alarm has been triggered
 	TOTAL_CONSEC_SANTA = 0
@@ -207,6 +212,18 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 		cv2.resizeWindow("Frame", 1200, 1200)
 		#cv2.setWindowProperty("Frame", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 	
+		# convert BGR image to grayscale
+	    #gray = cv2.cvtColor(img_to_array(frame), cv2.COLOR_BGR2GRAY)
+	    # find faces in image
+
+	    body = body_cascade.detectMultiScale(image)
+	    # get bounding box for each detected face
+	    for (x,y,w,h) in body:
+	        # add bounding box to color image
+	        cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),2)
+	    # convert BGR image to RGB for plotting
+	    #cv_rgb = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
+
 		# show the output frame
 		cv2.imshow("Frame", frame)
 		key = cv2.waitKey(1) & 0xFF
