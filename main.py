@@ -137,7 +137,7 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 	
 	AUDIO_PATH = "songs/jingle_bell_rock.mp3"
 
-	body_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_fullbody.xml')
+	#body_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_fullbody.xml')
 	
 	
 	# initialize is the santa alarm has been triggered
@@ -211,10 +211,10 @@ def activate_detection(TOTAL_THRESH_SANTA, TOTAL_THRESH_NOT_SANTA, model, led_pi
 		
 		cv2.resizeWindow("Frame", 1200, 1200)
 		#cv2.setWindowProperty("Frame", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-		body = body_cascade.detectMultiScale(gray)
-		for (x,y,w,h) in body:
-			cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
+		#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		#body = body_cascade.detectMultiScale(frame)
+		#for (x,y,w,h) in body:
+		#	cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
 		# show the output frame
 		cv2.imshow("Frame", frame)
 		key = cv2.waitKey(1) & 0xFF
