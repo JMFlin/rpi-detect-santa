@@ -44,7 +44,7 @@ if __name__ == '__main__':
     ap.add_argument("-u", "--path", required=True,
         help="path to video folder")
     ap.add_argument("-o", "--save", required=True,
-        help="path to directory where images hsould be saved")
+        help="path to directory where images should be saved")
     args = vars(ap.parse_args())
 
     read_videos_extract_frames(args)
