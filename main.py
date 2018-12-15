@@ -1,8 +1,6 @@
 import RPi.GPIO as GPIO
 from keras.preprocessing.image import img_to_array
 from keras.models import load_model
-#from gpiozero import LEDBoard
-#from gpiozero.tools import random_values
 from imutils.video import VideoStream
 from threading import Thread, Event
 import imutils
@@ -11,13 +9,14 @@ import time
 from time import sleep
 import os
 import numpy as np
-import
 
 GPIO.setmode(GPIO.BCM)
 MODEL_PATH = "networks/lenet/models/model-64-64.h5"
 AUDIO_PATH = "songs/jingle_bell_rock.mp3"
 TOTAL_THRESH_SANTA = 50
 TOTAL_THRESH_NOT_SANTA = 100
+TOTAL_CONSEC_SANTA = 0
+TOTAL_CONSEC_NOT_SANTA = 0
 
 led_pins = [2, 3]
 
@@ -25,17 +24,12 @@ print("[INFO] starting video stream...")
 vs = VideoStream(usePiCamera=True).start()
 sleep(2.0)
 
-AUDIO_PATH = "songs/jingle_bell_rock.mp3"
-
-SANTA = False
 #body_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_fullbody.xml')
 
-TOTAL_CONSEC_SANTA = 0
-TOTAL_CONSEC_NOT_SANTA = 0
+SANTA = False
 
 print("[INFO] loading model...")
 model = load_model(MODEL_PATH)
-
 
 def play_christmas_music(path):
     # construct the command to play the music, then execute the
